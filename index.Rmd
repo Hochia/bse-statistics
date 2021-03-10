@@ -11,6 +11,9 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+```{r child='HW1.Rmd'}
+```
+
 # Info {-}
 
 TA email: r08h41005@ntu.edu.tw

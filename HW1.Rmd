@@ -1,0 +1,35 @@
+# HW
+
+1. (30pt)
+
+\br(1) Load data... (3pt). Calculate... (5pt).
+
+\br(2) Calculate... (8pt).
+
+\br(3) Calculate... (8pt). Plot... (4pt).
+
+\br(4) Identify... (2pt).
+
+2. (30pt)
+
+\br(1) Plot... (10pt). 2pt for selected stations. 5pt for the plot. 3pt for the x-axis label.
+
+\br(2) Plot... (5pt).
+
+\br(3) Calculate... (10pt).
+
+\br(4) Identify... (5pt). 2pt for values of outliers. 1pt for the upper whisker and 1pt for the lower whisker.
+
+3. (20pt)
+
+\br(1) Calculate... (10pt). Both mean and sd account for 5pt.
+
+\br(2) Calculate... (10pt).
+
+4. (20pt)
+
+\br(1) Plot... (5pt).
+
+\br(2) Plot... (5pt).
+
+\br(3) Explain... (10pt).
