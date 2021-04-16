@@ -4,14 +4,21 @@ output:
   bookdown::html_document2:
     toc: yes
     toc_depth: 3
-    toc_float: yes
+    toc_float: 
+      collapsed: false
+      smooth_scroll: false
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-```{r child='HW1.Rmd'}
+# HW
+
+```{r child='HW2_ta_ans.Rmd'}
+```
+
+```{r child='HW1_ta_ans.Rmd'}
 ```
 
 # Info {-}
@@ -26,4 +33,4 @@ Homework: 作業採紙本繳交，包括數學題、程式碼與程式輸出，�
 
 R: 暫定每三周會有助教介紹 R 的使用，以利同學完成習題，確切時間配合授課老師通知。
 
-Website: 作業解答和其他助教提供的資料將會放在 <https://hochia.github.io/bse-statistics/>。教授課程網頁<http://www.rslabntu.net/courses/statistics>。助教一年前的上機資料<https://hochia.github.io/r-statistics/>。
+Website: 作業解答和其他助教提供的資料將會放在 <https://hochia.github.io/bse-statistics/>。教授課程網頁 <http://www.rslabntu.net/courses/statistics>。助教一年前的上機資料 <https://hochia.github.io/r-statistics/>。
