@@ -1,0 +1,205 @@
+## HW1
+
+**Total points: 100**
+
+```{r setup-hw1, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>", cache = TRUE)
+```
+
+```{r, message=FALSE}
+library(tidyverse)
+library(lubridate)
+library(scales)
+library(knitr)
+```
+
+1. (30pt)
+
+\br(1) Load data... (3pt). Calculate... (5pt).
+
+```{r}
+df = read.csv("hw1/raindata.csv") %>% tibble()
+df1 = df %>% 
+  group_by(ym = floor_date(mdy(Date), unit = "month")) %>% 
+  summarise_if(is.double, sum)
+kable(df1)
+```
+
+\br(2) Calculate... (8pt).
+
+```{r}
+df2 = df1 %>% 
+  group_by(month = str_sub(ym, 6, 7)) %>% 
+  summarise_if(is.double, mean)
+kable(select(df2, -ym))
+```
+
+\br(3) Calculate... (8pt). Plot... (4pt).
+
+```{r}
+df3 = df2 %>% 
+  rowwise(month) %>% 
+  mutate(regional_avg = mean(c_across(Site.A:Site.E))) %>% 
+  ungroup()
+kable(select(df3, month, regional_avg))
+ggplot(df3, aes(ymd(ym), regional_avg)) +
+  geom_point() +
+  geom_line() +
+  labs(x = "year-month", y = "regional-average monthly rainfall") +
+  theme_test()
+```
+
+\br(4) Identify... (2pt).
+
+```{r}
+# dry seasons are winter and spring
+df3 %>% 
+  filter(regional_avg < 50) %>% 
+  pull(ym) %>% 
+  month()
+# wet seasons are summer and fall
+df3 %>% 
+  filter(regional_avg > 50) %>% 
+  pull(ym) %>% 
+  month()
+```
+
+
+2. (30pt)
+
+\br(1) Plot... (10pt). 2pt for selected stations. 5pt for the plot. 3pt for the x-axis label.
+
+```{r}
+df = read.csv("hw1/Myanmar_Monthly_Rainfall.csv") %>% tibble()
+df_pick = df[sample(1:54, 5),] %>%  # randomly pick 5 stations
+  pivot_longer(cols = -Site, names_to = "month", values_to = "avg") %>% 
+  mutate(
+    Site = str_c("S", Site),
+    month = factor(month, levels = str_to_upper(month.abb)),
+  )
+ggplot(df_pick, aes(month, avg, color = Site, group = Site)) +
+  geom_line() +
+  labs(x = NULL, y = "average monthly rainfall") +
+  theme_test() +
+  theme(
+    legend.direction = "horizontal",
+    legend.position = c(.3, .9),
+  )
+```
+
+\br(2) Plot... (5pt).
+
+```{r}
+ggplot(df_pick, aes(month, avg)) +
+  geom_boxplot() +
+  labs(x = NULL, y = "average monthly rainfall") +
+  theme_test()
+```
+
+\br(3) Calculate... (10pt).
+
+```{r}
+df_pick %>% 
+  group_by(month) %>% 
+  summarise(mean = mean(avg), sd = sd(avg)) %>% 
+  kable()
+```
+
+\br(4) Identify... (5pt). 3pt for the values of outliers. 1pt for the upper whisker and 1pt for the lower whisker.
+
+```{r}
+values = df_pick %>% filter(month == "JUL") %>% pull(avg)
+values
+smy = unname(summary(values))
+IQR = smy[5] - smy[2]
+values[values > smy[5] + 1.5 * IQR | values < smy[2] - 1.5 * IQR] # values of outliers
+max(smy[2] - 1.5 * IQR, min(values)) # lower whisker
+min(smy[5] + 1.5 * IQR, max(values)) # upper whisker
+```
+
+3. (20pt)
+
+\br(1) Calculate... (10pt). Mean 5pt and sd 5 pt.
+
+```{r}
+df = readRDS("hw1/gosat_xco2_East_Asia.rds") %>% 
+  mutate(
+    # ym = format(as.Date(mdate), "%Y-%m"),
+    ym = floor_date(as.Date(mdate), unit = "month"),
+  ) %>% 
+  group_by(ym) %>%
+  summarise(
+    ym = unique(ym),
+    mean_co2 = mean(mr.co2), 
+    sd_co2 = sd(mr.co2),
+    .groups = "drop"
+  )
+kable(df)
+```
+
+\br(2) Plot... (10pt).
+
+```{r}
+df_48 = df %>% filter(month(ym) %in% c(4, 8))
+plt_label = "June 2009 - Jan 2016 (Land & Sea)\nMonthly average and standard deviation of FTX XCO2"
+ggplot(df, aes(ym, mean_co2)) +
+  geom_point() +
+  geom_point(data = df_48, aes(color = factor(month(ym)))) +
+  geom_line() +
+  geom_errorbar(aes(ymax = mean_co2 + qnorm(0.95) / 2 * sd_co2, 
+                    ymin = mean_co2 - qnorm(0.95) / 2 * sd_co2),
+                color = "#EE5555") +
+  annotate(
+    geom = "text", x = ymd(20140501), y = 382, size = 3.5,
+    label = plt_label
+  ) +
+  labs(x = "year", y = "CO2(ppm)") +
+  scale_x_date(
+    date_breaks = "1 year",
+    date_minor_breaks = "1 month",
+    labels = date_format("%Y"),
+    limits = ymd('2009-01-01','2016-01-01')
+  ) +
+  scale_color_manual(
+    name = NULL, 
+    breaks = c(4, 8), 
+    labels = c("April", "August"), 
+    values =c("#E61717", "#1421DE")
+  ) +
+  theme_test() +
+  theme(
+    legend.position = c(.42, .23),
+    legend.justification = c("right", "top"),
+  )
+```
+
+4. (20pt)
+
+\br(1) Plot... (5pt).
+
+```{r}
+df = read.csv("hw1/Wind_Speed.csv", header = FALSE, col.names = "wind_speed")
+df = df %>% mutate(site = "farm")
+ggplot(df, aes(site, wind_speed)) +
+  geom_boxplot() +
+  labs(x = NULL, y = "10-min average wind speed") +
+  theme_test()
+```
+
+\br(2) Plot... (5pt).
+
+```{r}
+ggplot(df, aes(wind_speed)) +
+  geom_histogram() +
+  labs(x = NULL, y = "10-min average wind speed") +
+  theme_test()
+```
+
+\br(3) Explain... (10pt).
+
+For example, skew to the right.
+
+## Appendix: All code for HW1
+
+```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
