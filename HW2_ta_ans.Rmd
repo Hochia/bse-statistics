@@ -179,8 +179,8 @@ $$
 \begin{aligned}
 f_X(x)=
 \left\{ \begin{array}{ll}
-0.4/2.5\cdot(x-10)  & & 10\leq x\leq 12.5,\\
-0.4 - 0.4/2.5\cdot(x-12.5) & & 12.5< x\leq 15,\\
+0.4/2.5\cdot(x-10)  & & 10\leq x< 12.5,\\
+0.4 - 0.4/2.5\cdot(x-12.5) & & 12.5\leq x<15,\\
 0 & & \text{o.w.}
 \end{array} \right.
 \end{aligned}
@@ -199,6 +199,8 @@ $$
 ```{r}
 integrate(function(x) {x * 0.4/2.5 * (x - 10)}, 10, 12.5)$value + integrate(function(x) {x * (0.4 - 0.4 / 2.5 * (x - 12.5))}, 12.5, 15)$value
 ```
+
+Or we can say that since the distribution is symmetric at $b$, the mean of the distribution is $b$.
 
 
 $$
@@ -220,13 +222,13 @@ integrate(function(x) {(x - 12.5)^2 * 0.4/2.5 *(x - 10)}, 10, 12.5)$value + inte
 integrate(function(x) {x^2 * 0.4/2.5 * (x - 10)}, 10, 12.5)$value + integrate(function(x) {x^2 * (0.4 - 0.4 / 2.5 * (x - 12.5))}, 12.5, 15)$value - 12.5^2
 ```
 
-\br(2) (5pt)
+\br(2) (3pt)
 
 $$
 \begin{aligned}
 f_Y(y)=
 \left\{ \begin{array}{ll}
-f_X(y)/0.5 = (0.4 - 0.4/2.5\cdot(y-12.5))/0.5 && 12.5< y\leq 15,\\
+f_X(y)/0.5 = (0.4 - 0.4/2.5\cdot(y-12.5))/0.5 && 12.5\leq y< 15,\\
 0 && \text{o.w.}
 \end{array} \right.
 \end{aligned}
@@ -301,7 +303,7 @@ $$
 \begin{aligned}
 P(\frac{X+n}{2}=k)
 &=P\Bigg(\sum^n_{i=1}\Big(\frac{X_i+1}{2}\Big)=k\Bigg)\\
-&=P\Bigg(\Big(\frac{X_i+1}{2}\Big)=k_i,\ i=1,2,\dots,n\ \Big|\sum^n_{i=1}k_i=k\Bigg)\\
+&=P\Bigg(\Big(\frac{X_i+1}{2}\Big)=k_i,\ i=1,2,\dots,n\ \Big|\sum^n_{i=1}k_i=k, k_i\in(0,1),\ i=1,2,\dots,n\Bigg)\\
 &={n\choose k}p^k(1-p)^{n-k},
 \end{aligned}
 $$
@@ -389,13 +391,18 @@ $$
 \begin{aligned}
 P(X>8)
 &=P(\frac{X+20}{2}>(8+20)/2)\\
-&=\sum^{20}_{k=14}{20\choose k}0.6^k(1-0.6)^{20-k}\\
-&=0.25
+&=\sum^{20}_{k=15}{20\choose k}0.6^k(1-0.6)^{20-k}\\
+&=0.1256\\
+P(X< -8)
+&=P(\frac{X+20}{2}<(-8+20)/2)\\
+&=\sum^{5}_{k=0}{20\choose k}0.6^k(1-0.6)^{20-k}\\
+&=0.0016\\
+P(X>8)&+P(X< -8)=0.1272
 \end{aligned}
 $$
 
 ```{r}
-sum(map_dbl(14:20, ~ choose(20, .x) * 0.6^.x * (1 - 0.6)^{20 - .x}))
+sum(dbinom(c(0:5, 15:20), 20, 0.6))
 ```
 
 \br(5) (5pt)
@@ -428,10 +435,10 @@ WLOG, let $b=0$ and we can know what $a$ is.
 
 $$
 \begin{aligned}
-\int^1_{-1}a\sqrt{1-x^2}dx
-&=a(\frac{x}{2}\sqrt{1-x^2}+\frac{a^2}{2}\sin^{-1}x)|^1_{-1}\\
-&=\frac{a^3}{2}\pi,\\
-a&=\sqrt[3]{\frac{2}{\pi}}
+1&=\int^1_{-1}a\sqrt{1-x^2}dx\\
+&=a(\frac{x}{2}\sqrt{1-x^2}+\frac{1}{2}\sin^{-1}x)|^1_{-1}\\
+&=\frac{a\pi}{2},\\
+a&=\frac{2}{\pi}
 \end{aligned}
 $$
 
@@ -441,7 +448,7 @@ $$
 \begin{aligned}
 f_Y(y)=
 \left\{ \begin{array}{ll}
-2\sqrt[3]{\frac{2}{\pi}}\sqrt{1-(x-b)^2} && b\leq x\leq b+1,\\
+2\frac{2}{\pi}\sqrt{1-(x-b)^2} && b\leq x\leq b+1,\\
 0 && \text{o.w.}
 \end{array} \right.
 \end{aligned}
@@ -457,9 +464,11 @@ Var(X)
 &=E((X-E(X))^2)\\
 &=E((X-b)^2)\\
 &=\int^{b+1}_{b-1}(x-b)^2a\sqrt{1-(x-b)^2}dx\\
+\text{let }&y=x-b,\ dy=dx\\
+&=\int^{1}_{-1}y^2a\sqrt{1-y^2}dy\\
 &=\frac{a}{8}(\sin^{-1}(1)-\sin^{-1}(-1))\\
 &=\frac{a\pi}{8}\\
-&=\sqrt[3]{\frac{2}{\pi}}\frac{\pi}{8}
+&=\frac{2}{\pi}\frac{\pi}{8}
 \end{aligned}
 $$
 
@@ -471,11 +480,14 @@ Z&=5+3(X-b)=3X+5-3b\\
 E(Z)&=E(3X+5-3b)\\
 &=3E(X)+5-3b\\
 &=3b+5-3b\\
-&=5
+&=5\\
+Var(Z)&=Var(3X+5-3b)\\
+&=9Var(X)\\
+&=\frac{9}{4}
 \end{aligned}
 $$
 
-7. (p40t)
+7. (40pt)
 
 \br(1) Total: (32pt). Each of the r.v., we get 1pt for the highest density, 6 pt for the p.d.f., 6pt for the c.d.f, 3pt for the plot.
 

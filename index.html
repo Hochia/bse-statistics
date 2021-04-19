@@ -405,8 +405,8 @@ F_X(x)&amp;=0.4\cdot2a/2=1,\quad a=2.5
 \begin{aligned}
 f_X(x)=
 \left\{ \begin{array}{ll}
-0.4/2.5\cdot(x-10)  &amp; &amp; 10\leq x\leq 12.5,\\
-0.4 - 0.4/2.5\cdot(x-12.5) &amp; &amp; 12.5&lt; x\leq 15,\\
+0.4/2.5\cdot(x-10)  &amp; &amp; 10\leq x&lt; 12.5,\\
+0.4 - 0.4/2.5\cdot(x-12.5) &amp; &amp; 12.5\leq x&lt;15,\\
 0 &amp; &amp; \text{o.w.}
 \end{array} \right.
 \end{aligned}
@@ -422,6 +422,7 @@ E(X)
 \]</span></p>
 <pre class="r"><code>integrate(function(x) {x * 0.4/2.5 * (x - 10)}, 10, 12.5)$value + integrate(function(x) {x * (0.4 - 0.4 / 2.5 * (x - 12.5))}, 12.5, 15)$value</code></pre>
 <pre><code>#&gt; [1] 12.5</code></pre>
+<p>Or we can say that since the distribution is symmetric at <span class="math inline">\(b\)</span>, the mean of the distribution is <span class="math inline">\(b\)</span>.</p>
 <p><span class="math display">\[
 \begin{aligned}
 Var(X)
@@ -439,12 +440,12 @@ integrate(function(x) {(x - 12.5)^2 * 0.4/2.5 *(x - 10)}, 10, 12.5)$value + inte
 <pre class="r"><code># 法二
 integrate(function(x) {x^2 * 0.4/2.5 * (x - 10)}, 10, 12.5)$value + integrate(function(x) {x^2 * (0.4 - 0.4 / 2.5 * (x - 12.5))}, 12.5, 15)$value - 12.5^2</code></pre>
 <pre><code>#&gt; [1] 1.041667</code></pre>
-<p>(2) (5pt)</p>
+<p>(2) (3pt)</p>
 <p><span class="math display">\[
 \begin{aligned}
 f_Y(y)=
 \left\{ \begin{array}{ll}
-f_X(y)/0.5 = (0.4 - 0.4/2.5\cdot(y-12.5))/0.5 &amp;&amp; 12.5&lt; y\leq 15,\\
+f_X(y)/0.5 = (0.4 - 0.4/2.5\cdot(y-12.5))/0.5 &amp;&amp; 12.5\leq y&lt; 15,\\
 0 &amp;&amp; \text{o.w.}
 \end{array} \right.
 \end{aligned}
@@ -503,7 +504,7 @@ integrate(function(x) {x^2 * (0.4 - 0.4 / 2.5 * (x - 12.5)) / 0.5}, 12.5, 15)$va
 \begin{aligned}
 P(\frac{X+n}{2}=k)
 &amp;=P\Bigg(\sum^n_{i=1}\Big(\frac{X_i+1}{2}\Big)=k\Bigg)\\
-&amp;=P\Bigg(\Big(\frac{X_i+1}{2}\Big)=k_i,\ i=1,2,\dots,n\ \Big|\sum^n_{i=1}k_i=k\Bigg)\\
+&amp;=P\Bigg(\Big(\frac{X_i+1}{2}\Big)=k_i,\ i=1,2,\dots,n\ \Big|\sum^n_{i=1}k_i=k, k_i\in(0,1),\ i=1,2,\dots,n\Bigg)\\
 &amp;={n\choose k}p^k(1-p)^{n-k},
 \end{aligned}
 \]</span></p>
@@ -570,12 +571,17 @@ P(\frac{X+n}{2}=k)
 \begin{aligned}
 P(X&gt;8)
 &amp;=P(\frac{X+20}{2}&gt;(8+20)/2)\\
-&amp;=\sum^{20}_{k=14}{20\choose k}0.6^k(1-0.6)^{20-k}\\
-&amp;=0.25
+&amp;=\sum^{20}_{k=15}{20\choose k}0.6^k(1-0.6)^{20-k}\\
+&amp;=0.1256\\
+P(X&lt; -8)
+&amp;=P(\frac{X+20}{2}&lt;(-8+20)/2)\\
+&amp;=\sum^{5}_{k=0}{20\choose k}0.6^k(1-0.6)^{20-k}\\
+&amp;=0.0016\\
+P(X&gt;8)&amp;+P(X&lt; -8)=0.1272
 \end{aligned}
 \]</span></p>
-<pre class="r"><code>sum(map_dbl(14:20, ~ choose(20, .x) * 0.6^.x * (1 - 0.6)^{20 - .x}))</code></pre>
-<pre><code>#&gt; [1] 0.2500107</code></pre>
+<pre class="r"><code>sum(dbinom(c(0:5, 15:20), 20, 0.6))</code></pre>
+<pre><code>#&gt; [1] 0.1272105</code></pre>
 <p>(5) (5pt)</p>
 <pre class="r"><code>df = tibble(
   simulation_set = factor(rep(1:5, each = 21)),
@@ -602,10 +608,10 @@ ggplot(df, aes(n, position, color = simulation_set)) +
 <p>WLOG, let <span class="math inline">\(b=0\)</span> and we can know what <span class="math inline">\(a\)</span> is.</p>
 <p><span class="math display">\[
 \begin{aligned}
-\int^1_{-1}a\sqrt{1-x^2}dx
-&amp;=a(\frac{x}{2}\sqrt{1-x^2}+\frac{a^2}{2}\sin^{-1}x)|^1_{-1}\\
-&amp;=\frac{a^3}{2}\pi,\\
-a&amp;=\sqrt[3]{\frac{2}{\pi}}
+1&amp;=\int^1_{-1}a\sqrt{1-x^2}dx\\
+&amp;=a(\frac{x}{2}\sqrt{1-x^2}+\frac{1}{2}\sin^{-1}x)|^1_{-1}\\
+&amp;=\frac{a\pi}{2},\\
+a&amp;=\frac{2}{\pi}
 \end{aligned}
 \]</span></p>
 <p>(2) (2pt)</p>
@@ -613,7 +619,7 @@ a&amp;=\sqrt[3]{\frac{2}{\pi}}
 \begin{aligned}
 f_Y(y)=
 \left\{ \begin{array}{ll}
-2\sqrt[3]{\frac{2}{\pi}}\sqrt{1-(x-b)^2} &amp;&amp; b\leq x\leq b+1,\\
+2\frac{2}{\pi}\sqrt{1-(x-b)^2} &amp;&amp; b\leq x\leq b+1,\\
 0 &amp;&amp; \text{o.w.}
 \end{array} \right.
 \end{aligned}
@@ -626,9 +632,11 @@ Var(X)
 &amp;=E((X-E(X))^2)\\
 &amp;=E((X-b)^2)\\
 &amp;=\int^{b+1}_{b-1}(x-b)^2a\sqrt{1-(x-b)^2}dx\\
+\text{let }&amp;y=x-b,\ dy=dx\\
+&amp;=\int^{1}_{-1}y^2a\sqrt{1-y^2}dy\\
 &amp;=\frac{a}{8}(\sin^{-1}(1)-\sin^{-1}(-1))\\
 &amp;=\frac{a\pi}{8}\\
-&amp;=\sqrt[3]{\frac{2}{\pi}}\frac{\pi}{8}
+&amp;=\frac{2}{\pi}\frac{\pi}{8}
 \end{aligned}
 \]</span></p>
 <p>(4) (2pt)</p>
@@ -638,11 +646,14 @@ Z&amp;=5+3(X-b)=3X+5-3b\\
 E(Z)&amp;=E(3X+5-3b)\\
 &amp;=3E(X)+5-3b\\
 &amp;=3b+5-3b\\
-&amp;=5
+&amp;=5\\
+Var(Z)&amp;=Var(3X+5-3b)\\
+&amp;=9Var(X)\\
+&amp;=\frac{9}{4}
 \end{aligned}
 \]</span></p>
 <ol start="7" style="list-style-type: decimal">
-<li>(p40t)</li>
+<li>(40pt)</li>
 </ol>
 <p>(1) Total: (32pt). Each of the r.v., we get 1pt for the highest density, 6 pt for the p.d.f., 6pt for the c.d.f, 3pt for the plot.</p>
 <p><span class="math display">\[
@@ -791,7 +802,7 @@ integrate(function(x) {x * (0.4 - 0.4 / 2.5 * (x - 12.5)) / 0.5}, 12.5, 15)$valu
 integrate(function(x) {(x - 13.3333)^2 * (0.4 - 0.4 / 2.5 * (x - 12.5)) / 0.5}, 12.5, 15)$value
 # 法二
 integrate(function(x) {x^2 * (0.4 - 0.4 / 2.5 * (x - 12.5)) / 0.5}, 12.5, 15)$value - 13.3333^2
-sum(map_dbl(14:20, ~ choose(20, .x) * 0.6^.x * (1 - 0.6)^{20 - .x}))
+sum(dbinom(c(0:5, 15:20), 20, 0.6))
 df = tibble(
   simulation_set = factor(rep(1:5, each = 21)),
   n = rep(0:20, times = 5),
@@ -3158,7 +3169,7 @@ integrate(function(x) {x * (0.4 - 0.4 / 2.5 * (x - 12.5)) / 0.5}, 12.5, 15)$valu
 integrate(function(x) {(x - 13.3333)^2 * (0.4 - 0.4 / 2.5 * (x - 12.5)) / 0.5}, 12.5, 15)$value
 # 法二
 integrate(function(x) {x^2 * (0.4 - 0.4 / 2.5 * (x - 12.5)) / 0.5}, 12.5, 15)$value - 13.3333^2
-sum(map_dbl(14:20, ~ choose(20, .x) * 0.6^.x * (1 - 0.6)^{20 - .x}))
+sum(dbinom(c(0:5, 15:20), 20, 0.6))
 df = tibble(
   simulation_set = factor(rep(1:5, each = 21)),
   n = rep(0:20, times = 5),
