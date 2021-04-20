@@ -63,9 +63,9 @@ sample(sample_space, size = 10, replace = FALSE)
 
 $$
 \begin{aligned}
-F_X(x)&=f_X(12)\cdot(40-5)/2=1\\
+F_X(40)&=f_X(12)\cdot(40-5)/2=1\\
 f_X(12)&=2/35\\
-F_Y(y)&=f_Y(35)\cdot(55-15)/2=1\\
+F_Y(55)&=f_Y(35)\cdot(55-15)/2=1\\
 f_Y(35)&=1/20
 \end{aligned}
 $$
@@ -171,7 +171,7 @@ ggplot(df, aes(z, F_z)) +
 
 $$
 \begin{aligned}
-F_X(x)&=0.4\cdot2a/2=1,\quad a=2.5
+F_X(10+2a)&=0.4\cdot2a/2=1,\quad a=2.5
 \end{aligned}
 $$
 
@@ -493,7 +493,7 @@ $$
 
 $$
 \begin{aligned}
-15f_X(5)/2&=1\\
+F_X(15)&=15f_X(5)/2=1\\
 f_X(5)&=\frac{2}{15}\\
 f_X(x)&=
 \left\{ \begin{array}{ll}
@@ -534,7 +534,7 @@ ggplot(df, aes(x, F_x)) +
 
 $$
 \begin{aligned}
-10f_Y(10)/2&=1\\
+F_Y(15)&=10f_Y(10)/2=1\\
 f_Y(10)&=\frac{1}{5}\\
 f_Y(y)&=
 \left\{ \begin{array}{ll}
