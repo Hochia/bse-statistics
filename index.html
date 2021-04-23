@@ -2633,12 +2633,13 @@ values</code></pre>
 <pre><code>#&gt; [1]  27.19493  58.58933  40.01347 151.01147  65.02400</code></pre>
 <pre class="r"><code>smy = unname(summary(values))
 IQR = smy[5] - smy[2]
-values[values &gt; smy[5] + 1.5 * IQR | values &lt; smy[2] - 1.5 * IQR] # values of outliers</code></pre>
+outliers = values[values &gt; smy[5] + 1.5 * IQR | values &lt; smy[2] - 1.5 * IQR] # values of outliers
+outliers</code></pre>
 <pre><code>#&gt; [1] 151.0115</code></pre>
-<pre class="r"><code>max(smy[2] - 1.5 * IQR, min(values)) # lower whisker</code></pre>
+<pre class="r"><code>min(values[!values %in% outliers]) # lower whisker</code></pre>
 <pre><code>#&gt; [1] 27.19493</code></pre>
-<pre class="r"><code>min(smy[5] + 1.5 * IQR, max(values)) # upper whisker</code></pre>
-<pre><code>#&gt; [1] 102.5398</code></pre>
+<pre class="r"><code>max(values[!values %in% outliers]) # upper whisker</code></pre>
+<pre><code>#&gt; [1] 65.024</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li>(20pt)</li>
 </ol>
@@ -3284,9 +3285,10 @@ values = df_pick %&gt;% filter(month == &quot;JUL&quot;) %&gt;% pull(avg)
 values
 smy = unname(summary(values))
 IQR = smy[5] - smy[2]
-values[values &gt; smy[5] + 1.5 * IQR | values &lt; smy[2] - 1.5 * IQR] # values of outliers
-max(smy[2] - 1.5 * IQR, min(values)) # lower whisker
-min(smy[5] + 1.5 * IQR, max(values)) # upper whisker
+outliers = values[values &gt; smy[5] + 1.5 * IQR | values &lt; smy[2] - 1.5 * IQR] # values of outliers
+outliers
+min(values[!values %in% outliers]) # lower whisker
+max(values[!values %in% outliers]) # upper whisker
 df = readRDS(&quot;hw1/gosat_xco2_East_Asia.rds&quot;) %&gt;% 
   mutate(
     # ym = format(as.Date(mdate), &quot;%Y-%m&quot;),

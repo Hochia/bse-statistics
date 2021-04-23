@@ -112,9 +112,10 @@ values = df_pick %>% filter(month == "JUL") %>% pull(avg)
 values
 smy = unname(summary(values))
 IQR = smy[5] - smy[2]
-values[values > smy[5] + 1.5 * IQR | values < smy[2] - 1.5 * IQR] # values of outliers
-max(smy[2] - 1.5 * IQR, min(values)) # lower whisker
-min(smy[5] + 1.5 * IQR, max(values)) # upper whisker
+outliers = values[values > smy[5] + 1.5 * IQR | values < smy[2] - 1.5 * IQR] # values of outliers
+outliers
+min(values[!values %in% outliers]) # lower whisker
+max(values[!values %in% outliers]) # upper whisker
 ```
 
 3. (20pt)
