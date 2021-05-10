@@ -1,0 +1,66 @@
+## HW4
+
+```{r setup-hw4, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>", cache = TRUE)
+```
+
+```{r, eval=FALSE}
+# 3.1
+x = c(-43.5615, -42.5594, -27.5556, -24.8670, -7.6353, 
+      -16.6590, -30.3863, -13.9924, -48.8766, -40.9939, 
+      -38.2022, -8.6007, -26.9491, -41.7347, -20.3306,
+      -16.6453, -8.1240, -6.7680, -14.3989, -37.0406,
+      -0.8470, -18.0262, -20.5075, -25.0793, -16.8221,
+      -7.7765, 14.4545, 35.3056, 33.6065, -0.1143, 
+      -0.5319, 7.5514, -0.4998, 14.1964, -0.1449,
+      11.8305, 22.5281, 29.9923, 40.7217, 14.2982,
+      23.3038, 20.4037, 17.2357, 43.1575, 34.5701,
+      33.7827, 31.9995, 23.4265, 18.9954, 13.7399)
+# TODO: calculate mean and standard deviation of `x`
+
+# 4.1
+x = c(-5.407, -64.317, -18.434, 24.298, -38.989, 
+      -6.800, -43.550, 31.181, -23.789, -8.363, 
+      59.050, 32.460, -8.182, -20.621, 14.489, 
+      -20.165, 2.946, 13.432, 33.898, -43.162, 
+      -35.052, 46.106, 14.658, 21.340, 13.584, 
+      16.901, 16.977, 23.161, -38.092, -16.026, 
+      17.982, 15.979, -20.913, 17.966, 43.496, 
+      -17.282, -16.295, 9.455, -6.092, -3.146, 
+      19.561, -37.615, -1.747, -44.600, -38.186, 
+      -1.586, 65.115, 4.176, 5.509, 38.330)
+# TODO: calculate mean and standard deviation of `x`
+
+# 5.1
+library(tidyverse)
+# TODO: `constant` is the constant c in the question, you have to prove c at first
+constant = ____
+n = 10000 # target random sample size
+# TODO: fill in the number of random sample
+df = tibble(
+  rexp = rexp(____, 1), 
+  dexp = constant * dexp(rexp, 1),
+  runif = runif(____, min = 0, max = dexp),
+  dnorm = 2 * dnorm(rexp),
+  reject = dnorm < runif
+)
+# after filter those not rejected random samples, which represent sampling from truncated normal distribution, 
+samples = df %>% 
+  filter(reject == FALSE) %>% 
+  pull(rexp)
+# TODO: you need to give positive or negative sign randomly to random samples
+samples = samples[1:n] * sample(c(1, -1), size = n, replace = TRUE)
+# TODO: calculate the mean and variance
+# TODO: plot the histogram
+
+# Additional code (not necessary to submit)
+# demonstrate the acceptance-rejection method
+ggplot(df) +
+  geom_point(aes(rexp, runif, colour = reject), size = .01) +
+  geom_line(aes(rexp, dexp), colour = "darkgreen") +
+  geom_line(aes(rexp, dnorm), colour = "darkorange") +
+  scale_colour_manual(values = c("lightgoldenrod", "lightgreen"), guide = FALSE) +
+  labs(x = "", y = "") +
+  theme_classic()
+```
+
